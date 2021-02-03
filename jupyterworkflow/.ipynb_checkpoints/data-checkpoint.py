@@ -27,6 +27,10 @@ def get_fremont_data(filename = "fremont.csv", url=FREMONT_URL, force_download=F
     '''
     if force_download or not os.path.exists(filename):
         urlretrieve(url, 'freemont.csv')
-    data = pd.read_csv('fremont.csv', index_col = 'Date', parse_dates=True)
+    data = pd.read_csv('fremont.csv', index_col = 'Date')
+    try:
+        data.index=pd.to_datetime(data.index, format='%m/%d/%Y %H:%M:%S %p') # check it here: https://strftime.org/
+    except TypeError:
+        data.index=pd.to_datetime(data.index)
     data.columns = ['Total', 'East', 'West']
     return data
